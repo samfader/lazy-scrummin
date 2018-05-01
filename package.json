@@ -18,6 +18,7 @@
   "homepage": "https://github.com/samfader/lazy-scrummin#readme",
   "dependencies": {
     "inquirer": "^5.2.0",
+    "promptly": "^3.0.3",
     "slack-api": "^0.1.14"
   }
 }
