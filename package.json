@@ -1,0 +1,23 @@
+{
+  "name": "lazy-scrummin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samfader/lazy-scrummin.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/samfader/lazy-scrummin/issues"
+  },
+  "homepage": "https://github.com/samfader/lazy-scrummin#readme",
+  "dependencies": {
+    "inquirer": "^5.2.0",
+    "slack-api": "^0.1.14"
+  }
+}
