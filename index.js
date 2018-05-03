@@ -3,19 +3,47 @@
 3. how does this look? (y/n)
 4. post to slack
 */
+
+/* TO do
+- message formatting
+- show user how message looks and then offer confirmation before sending
+- extra credit: auto complete emoji list
+- extra credit: ability to cancel and rewrite list
+*/
 'use strict';
 
-var Slack = require('slack-api');
-var inquirer = require('inquirer');
+require('dotenv').config();
+
+const { WebClient } = require('@slack/client');
 const prompts = require('prompts');
 
-// example to work off of: https://github.com/terkelg/prompts/blob/master/example.js
+// should be hidden const token = process.env.SLACK_TOKEN;
+const token = process.env.SLACK_TOKEN;
+const web = new WebClient(token);
+
+// This argument can be a channel ID, a DM ID, a MPDM ID, or a group ID
+const conversationId = 'CAG0W969X';
+
+// Takes a message from prompts, sends it to #support slack channel
+function sendMessage(message) {
+  // See: https://api.slack.com/methods/chat.postMessage
+  // as_user sends message as authed user, not bot
+  web.chat.postMessage({ channel: conversationId, text: message, as_user: true })
+    .then((res) => {
+      // `res` contains information about the posted message
+      console.log('Message sent: ', res.ts);
+    })
+    .catch(console.error);
+};
+
+// example of prompts capabilities:
+//      https://github.com/terkelg/prompts/blob/master/example.js
 
 (async function(){
     const questions = [
         {
             type: 'list',
-            name: 'to-dos',
+            name: 'todos',
             message: 'Hi there! 🤠 What are you working on today?',
         },
         {
@@ -30,66 +58,17 @@ const prompts = require('prompts');
             name: 'confirmed',
             message: 'Can you confirm?'
         }
-        // {
-        //     type: 'invisible',
-        //     name: 'password',
-        //     message: `Enter password`
-        // },
-        // {
-        //     type: prev => prev && 'toggle',
-        //     name: 'confirmtoggle',
-        //     message: 'Can you confirm again?',
-        //     active: 'yes',
-        //     inactive: 'no'
-        // },
-        // {
-        //     type: 'list',
-        //     name: 'keywords',
-        //     message: 'Enter keywords'
-        // },
-        // {
-        //     type: 'select',
-        //     name: 'color',
-        //     message: 'Pick a color',
-        //     choices: [
-        //       { title: 'Red', value: '#ff0000' },
-        //       { title: 'Green', value: '#00ff00' },
-        //       { title: 'Blue', value: '#0000ff' }
-        //     ]
-        // },
-        // {
-        //     type: 'multiselect',
-        //     name: 'multicolor',
-        //     message: 'Pick colors',
-        //     choices: [
-        //         { title: 'Red', value: '#ff0000' },
-        //         { title: 'Green', value: '#00ff00' },
-        //         { title: 'Blue', value: '#0000ff' }
-        //     ]
-        // },
-        // {
-        //     type: 'autocomplete',
-        //     name: 'value',
-        //     message: 'Pick your favorite actor',
-        //     initial: 1,
-        //     choices: [
-        //         { title: 'Cage' },
-        //         { title: 'Clooney', value: 'silver-fox' },
-        //         { title: 'Gyllenhaal' },
-        //         { title: 'Gibson' },
-        //         { title: 'Grant' },
-        //     ]
-        // }
     ];
 
     const answers = await prompts(questions);
+    console.log(answers.emoji);
+    console.log(answers.todos);
+    var i;
+    var finalMessage;
+    for (i=0; i < answers.todos.length; i++) {
+      finalMessage += answers.emoji + " " + answers.todos[i] + "\n";
+    }
+    console.log(finalMessage);
     console.log(answers);
-
+    sendMessage(finalMessage);
 })();
-
-Slack.api.test({}, function (error, data) {
-  console.log(data);
-});
-
-
-// https://github.com/ustice/slack-api
