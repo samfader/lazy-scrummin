@@ -15,7 +15,6 @@
 */
 
 /* TO do
-- bug: undefined showing up at start
 - bug: @ support center not tagging supportcenter
 - extra credit: auto complete emoji list
 */
@@ -33,6 +32,24 @@ const web = new WebClient(token);
 
 // This argument can be a channel ID, a DM ID, a MPDM ID, or a group ID
 const conversationId = 'CAG0W969X';
+
+// get slack emoji list
+// var data = null;
+// var XMLHttpRequest = require("xmlhttprequest").XMLHttpRequest;
+// var xhr = new XMLHttpRequest();
+// xhr.withCredentials = true;
+//
+// xhr.addEventListener("readystatechange", function () {
+//   if (this.readyState === 4) {
+//     console.log(this.responseText);
+//   }
+// });
+//
+// xhr.open("GET", "https://slack.com/api/emoji.list?token=xoxp-2546826112-310995180102-320573456167-9d1060e1acdfa163a6f80611f96135ad&pretty=1");
+// xhr.setRequestHeader("Cache-Control", "no-cache");
+// xhr.setRequestHeader("Postman-Token", "c75bdfc9-8e10-2eb5-d616-e5867832df0f");
+//
+// xhr.send(data);
 
 // Takes a message from prompts, sends it to #support slack channel
 function sendMessage(message) {
@@ -57,11 +74,13 @@ function sendMessage(message) {
             message: 'Hi there! 🤠 What are you working on today?',
         },
         {
-            type: 'text',
+            type: 'autocomplete',
             name: 'emoji',
-            message: `What is your emoji today?`,
-            format: v => `:${v}:`
-            // TO DO: autocomplete (see last option) with slack emojis
+            message: 'What is your emoji today?',
+            choices: [
+                { title: 'poop', value: ':poop:' },
+                { title: 'sad_bread', value: ':sad_bread:' },
+            ]
         }
 
     ];
@@ -77,7 +96,7 @@ function sendMessage(message) {
     const answers = await prompts(questions);
 
     var i;
-    var finalMessage;
+    var finalMessage = '';
     for (i=0; i < answers.todos.length; i++) {
       finalMessage += answers.emoji + " " + answers.todos[i] + "\n";
     }
@@ -86,8 +105,8 @@ function sendMessage(message) {
     const allGood = await prompts(confirmation);
 
     if (allGood.confirmed) {
-    // TO DO - change this to @supportcenter
-    sendMessage("supportcenter - here's my day today: \n" + finalMessage);
+    // TO DO - change this to @supportcenter (turns out this is not possible?)
+    sendMessage("<@UABKFKPDY> - here's my day today: \n" + finalMessage);
     } else {
     // restart function
     interrogator();
