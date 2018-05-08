@@ -4,12 +4,22 @@
 4. post to slack
 */
 
-/* TO do
-- message formatting
-- show user how message looks and then offer confirmation before sending
-- extra credit: auto complete emoji list
-- extra credit: ability to cancel and rewrite list
+/* Instructions to install:
+
+1) go here https://api.slack.com/apps/AAJV2MWG7/oauth?success=1
+2) click Install to workspace
+3) authorize to post as you in #support
+4) copy token
+5) create file called `.env` in root that contains one line: `SLACK_TOKEN='token'`
+6) run it using `node index.js`
 */
+
+/* TO do
+- bug: undefined showing up at start
+- bug: @ support center not tagging supportcenter
+- extra credit: auto complete emoji list
+*/
+
 'use strict';
 
 require('dotenv').config();
@@ -39,7 +49,7 @@ function sendMessage(message) {
 // example of prompts capabilities:
 //      https://github.com/terkelg/prompts/blob/master/example.js
 
-(async function(){
+(async function interrogator(){
     const questions = [
         {
             type: 'list',
@@ -52,23 +62,34 @@ function sendMessage(message) {
             message: `What is your emoji today?`,
             format: v => `:${v}:`
             // TO DO: autocomplete (see last option) with slack emojis
-        },
-        {
-            type: 'confirm',
-            name: 'confirmed',
-            message: 'Can you confirm?'
         }
+
+    ];
+    // Need to keep confirmation as an isolated object?
+    const confirmation = [
+      {
+          type: 'confirm',
+          name: 'confirmed',
+          message: 'Does this look right to you?'
+      }
     ];
 
     const answers = await prompts(questions);
-    console.log(answers.emoji);
-    console.log(answers.todos);
+
     var i;
     var finalMessage;
     for (i=0; i < answers.todos.length; i++) {
       finalMessage += answers.emoji + " " + answers.todos[i] + "\n";
     }
+
     console.log(finalMessage);
-    console.log(answers);
-    sendMessage(finalMessage);
+    const allGood = await prompts(confirmation);
+
+    if (allGood.confirmed) {
+    // TO DO - change this to @supportcenter
+    sendMessage("supportcenter - here's my day today: \n" + finalMessage);
+    } else {
+    // restart function
+    interrogator();
+  };
 })();
