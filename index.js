@@ -45,7 +45,7 @@ const conversationId = 'CAG0W969X';
 //   }
 // });
 //
-// xhr.open("GET", "https://slack.com/api/emoji.list?token=xoxp-2546826112-310995180102-320573456167-9d1060e1acdfa163a6f80611f96135ad&pretty=1");
+// xhr.open("GET", "https://slack.com/api/emoji.list?token=token&pretty=1");
 // xhr.setRequestHeader("Cache-Control", "no-cache");
 // xhr.setRequestHeader("Postman-Token", "c75bdfc9-8e10-2eb5-d616-e5867832df0f");
 //
